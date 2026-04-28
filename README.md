@@ -42,11 +42,8 @@
 
 ---
 
-*Для полного анализа см. документ [Architecture_overview.md](HW3_DIR/Architecture_overview.md).*
+### 📝 История работы
 
-<task_progress>
-- [x] Прочитать файл Architecture_overview.md
-- [x] Прочитать текущий README.md
-- [x] Обновить README.md с планом исследования, описанием приложения и ссылкой на Architecture_overview.md
-- [ ] Скоммитить изменения в репозиторий AI_Edu_HW2_Final
-</task_progress>
+- **[Cline_dialog.md](HW3_DIR/Cline_dialog.md)** — детальная история диалога с описанием всех промптов, статуса выполнения и использованных инструментов
+
+*Для полного анализа см. документ [Architecture_overview.md](HW3_DIR/Architecture_overview.md).*
