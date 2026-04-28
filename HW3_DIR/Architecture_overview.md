@@ -55,7 +55,7 @@ DeepEval — это фреймворк для автоматизированно
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           DeepEval System Architecture                       │
+│                           DeepEval System Architecture                      │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────┐       ┌─────────────┐       ┌─────────────┐
@@ -81,8 +81,8 @@ DeepEval — это фреймворк для автоматизированно
                     │ (files/SQL/Cloud) │
                     └───────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Integration Modules (Plugins)                                               │
+┌───────────────────────────────────────────────────────────────────────────┐
+│ Integration Modules (Plugins)                                             │
 ├─────────────────┬─────────────────┬─────────────────┬─────────────────────┤
 │ CrewAI          │ LangChain       │ LlamaIndex      │ Pydantic AI         │
 │ Integration     │ Integration     │ Integration     │ Integration         │
@@ -214,10 +214,10 @@ DeepEval — это фреймворк для автоматизированно
          │  - push()          │ │  - build()      │ │  - embed()      │
          │  - pull()          │ │  - create()     │ │  - call()       │
          └─────────┬──────────┘ └──────┬──────────┘ └────────┬────────┘
-                   │                   │                      │
-                   │                   │                      │
-         ┌─────────▼──────────┐ ┌──────▼──────────┐         ▼
-         │  EvaluationEngine  │ │  MetricsEngine  │ ┌──────▼──────────┐
+                   │                   │                     │
+                   │                   │                     │
+         ┌─────────▼──────────┐ ┌──────▼──────────┐          ▼
+         │  EvaluationEngine  │ │  MetricsEngine  │ ┌────────▼────────┐
          │  - evaluate()      │ │  - measure()    │ │  ResultStorage  │
          │  - compare()       │ │  - aggregate()  │ │  - files        │
          │  - execute()       │ │  - report()     │ │  - cloud        │
@@ -240,18 +240,18 @@ DeepEval — это фреймворк для автоматизированно
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│              State Diagram: LLM Model Evaluation Process                      │
+│              State Diagram: LLM Model Evaluation Process                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 
                 ┌───────────────────────────────────────┐
-                │            Idle                        │
-                │  (Ожидание запуска оценки)             │
+                │            Idle                       │
+                │  (Ожидание запуска оценки)            │
                 └────────────────┬──────────────────────┘
                                  │ user initiates
                                  │  deepeval.evaluate(
                                  │    dataset, test_cases, metrics, model
                                  │  )
-                    ┌────────────▼──────────────┐
+                    ┌────────────▼───────────────┐
                     │        Initializing        │
                     │  - Parsing config files    │
                     │  - Loading API keys        │
@@ -261,84 +261,84 @@ DeepEval — это фреймворк для автоматизированно
                                  │  dataset parsed
                    ┌─────────────▼─────────────────────┐
                    │           Loading                 │
-                   │  - Cache miss check              │
-                   │  - Load from disk or config      │
-                   │  - Pre-process test cases        │
-                   └────────────┬──────────────────────┘
+                   │  - Cache miss check               │
+                   │  - Load from disk or config       │
+                   │  - Pre-process test cases         │
+                   └─────────────┬─────────────────────┘
                                  │  dataset ready
                                  │  metrics initialized
                    ┌─────────────▼─────────────────────┐
-                   │         Configured                 │
+                   │         Configured                │
                    │  - AsyncConfig applied            │
                    │  - DisplayConfig set              │
                    │  - ErrorConfig parameters         │
-                   └────────────┬──────────────────────┘
+                   └─────────────┬─────────────────────┘
                                  │ validate params
                    ┌─────────────▼─────────────────────┐
-                   │         Validation                 │
+                   │         Validation                │
                    │  - Input validation               │
                    │  - Parameter checking             │
-                   └────────────┬──────────────────────┘
+                   └─────────────┬─────────────────────┘
                                  │ all valid
                    ┌─────────────▼─────────────────────┐
                    │      Execution Queue Building     │
                    │  - Test cases indexed             │
-                   │  - Metrics assigned                │
+                   │  - Metrics assigned               │
                    │  - Semaphores created             │
-                   └────────────┬──────────────────────┘
+                   └─────────────┬─────────────────────┘
                                  │ generate test
                     ┌────────────▼─────────────────────┐
-                    │     Test Generation               │
+                    │     Test Generation              │
                     │  - LLMTestCase creation          │
                     │  - Question, answer,             │
                     │    expected_answer, feedback     │
-                    └────────────┬──────────────────────┘
+                    └────────────┬─────────────────────┘
                                  │ generate call
                    ┌─────────────▼─────────────────────┐
-                   │    OpenAI API Call                 │
+                   │    OpenAI API Call                │
                    │  - Request body: {prompt}         │
-                   │  - Response: {answer}              │
-                    └────────────┬──────────────────────┘
+                   │  - Response: {answer}             │
+                   └─────────────┬─────────────────────┘
                                  │ validate model call
                    ┌─────────────▼─────────────────────┐
-                   │       Metric Execution             │
-                   │  - measure() for each metric       │
+                   │       Metric Execution            │
+                   │  - measure() for each metric      │
                    │  - Hallucination, Toxicity,       │
-                    │    Relevancy, etc.                │
-                   └────────────┬──────────────────────┘
+                   │    Relevancy, etc.                │
+                   └─────────────┬─────────────────────┘
                                  │ compute scores
                    ┌─────────────▼─────────────────────┐
-                   │     Result Storage                 │
-                   │  - TestResult created              │
-                    │  - Metrics aggregated             │
-                   │  - Pass/Fail determination         │
-                   └────────────┬───────────────────────┘
+                   │     Result Storage                │
+                   │  - TestResult created             │
+                   │  - Metrics aggregated             │
+                   │  - Pass/Fail determination        │
+                   └─────────────┬─────────────────────┘
                                  │ rate limit
                    ┌─────────────▼─────────────────────┐
-                   │         Rate Limiting              │
-                   │  - Semaphore enforces limits        │
-                   │  - Batch if possible               │
+                   │         Rate Limiting             │
+                   │  - Semaphore enforces limits      │
+                   │  - Batch if possible              │
                    └────────────┬──────────────────────┘
                                  │ rate limit exhausted
                     ┌────────────▼─────────────────────┐
-                    │      Waiting for next batch       │
-                    │  - Retry on failure               │
-                    │  - Continue if non-blocking       │
-                    └────────────┬──────────────────────┘
+                    │      Waiting for next batch      │
+                    │  - Retry on failure              │
+                    │  - Continue if non-blocking      │
+                    └────────────┬─────────────────────┘
                                  │ all done
                    ┌─────────────▼─────────────────────┐
-                   │       Completion                   │
-                   │  - Aggregate results               │
-                   │  - Generate report                 │
-                   │  - Error handling if needed        │
-                   │  - Upload to cloud (optional)      │
-                   └────────────┬──────────────────────┘
+                   │       Completion                  │
+                   │  - Aggregate results              │
+                   │  - Generate report                │
+                   │  - Error handling if needed       │
+                   │  - Upload to cloud (optional)     │
+                   └─────────────┬─────────────────────┘
                                  │ cleanup
                    ┌─────────────▼─────────────────────┐
-                   │          Done                      │
-                   │  - Results available               │
-                   │  - Can view via CLI/web interface  │
-                   └────────────────────────────────────┘
+                   │          Done                     │
+                   │  - Results available              │
+                   │  - Can view via CLI/web interface │
+                   └───────────────────────────────────┘
 ```
 
 #### Последовательность вызовов
@@ -437,7 +437,7 @@ User receives final report
 
 #### 4.1 Узкие места производительности
 
-| ID | Пропуск | Описани | Критичность |
+| ID | Пропуск | Описание | Критичность |
 |----|---------|---------|-------------|
 | PM-01 | Асинхронные вызовы через `a_execute_()` | Использование `asyncio.semaphore` увеличивает время ожидания при задержке от сервиса | Средняя |
 | PM-02 | `measure_metric_task()` | Синхронный вызов длинного модели в `metrics.measure()` блокирует поток | Средняя |
@@ -456,7 +456,7 @@ User receives final report
 
 #### 4.3 Безопасность и уязвимости
 
-| ID | Уязвимость | Описани | Влияние | Критичность |
+| ID | Уязвимость | Описание | Влияние | Критичность |
 |----|------------|---------|---------|-------------|
 | SEC-01 | `key_handler.py` в открытом виде | API keys хранятся в плейн-тексте, могут быть считаны/украдены пятнышко | Высокая |
 | SEC-02 | `telemetry.py` собирает данные пользователя | Анонимные данные *от* пользователя могут раскрыть информацию | Средняя |
@@ -465,7 +465,7 @@ User receives final report
 
 #### 4.4 Проблемы качества результатов
 
-| ID | Проблема | Описани | Влияние |
+| ID | Проблема | Описание | Влияние |
 |----|----------|---------|---------|
 | QUAL-01 | Зависимость от одной метрики | Некоторые метрики (например, Hallucination) могут давать ложные исходные проверки | Средняя |
 | QUAL-02 | Отсутствие верификации результатов | Не все метрики генерируют результаты валидации | Низкая |
@@ -496,7 +496,7 @@ User receives final report
 | SEC-04 | Parameter validation gaps | Средняя | P2 | - Расширить `validate_evaluate_inputs()` <br> - Добавить unit-тесты для всех путей | Reliability | SPRINT 2 |
 | PM-05 | No cache for repeated calls | Средняя | P2 | - Добавить in-memory cache <br> - Добавить LRU policy | Performance | SPRINT 2 |
 
-### Ператность устранения
+### Приоритет устранения
 
 #### SPRINT 1 (Critical Priority)
 1. **SEC-01** - Шифрование API ключей
